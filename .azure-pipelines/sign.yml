@@ -22,6 +22,7 @@ steps:
     pwsh: true
 
 - task: PowerShell@2
+  displayName: print installed modules
   inputs:
     targetType: 'inline'
     script: 'Get-InstalledModule'
