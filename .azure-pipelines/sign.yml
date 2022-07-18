@@ -259,7 +259,7 @@ jobs:
     inputs:
       command: 'custom'
       custom: 'msbuild'
-      arguments: 'build.proj /t:Publish /p:Configuration=Release;NuGetKey=$(NuGetKey);GenerateDocumentationFile=false'
+      arguments: 'build.proj /t:Publish /p:Configuration=Release;GenerateDocumentationFile=false'
 
   - task: PowerShell@2
     displayName: AzureStack (hide Az.Accounts/Az.IotHub/Az.EventHub/DataboxEdge/Monitor)
