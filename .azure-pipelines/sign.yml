@@ -8,7 +8,7 @@ jobs:
   displayName: Release
   timeoutInMinutes: 180
   pool:
-    vmImage: 'windows-2019'
+    name: pool-windows-2019
 
   steps:
   - task: PowerShell@2
