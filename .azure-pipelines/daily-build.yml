@@ -138,7 +138,7 @@ jobs:
     inputs:
       command: custom
       custom: msbuild
-      arguments: 'build.proj /t:Publish /p:Configuration=Release;NuGetKey=$(NuGetKey)'
+      arguments: 'build.proj /t:"Build;Publish" /p:Configuration=Release;NuGetKey=12345;GenerateDocumentationFile=false'
 
   - task: PublishPipelineArtifact@0
     displayName: 'Save artifacts'
