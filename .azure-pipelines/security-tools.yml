@@ -38,3 +38,11 @@ steps:
     custom: 'msbuild'
     arguments: 'build.proj /t:Build;GenerateHelp /p:PullRequestNumber=$(System.PullRequest.PullRequestNumber);IsSecurityCheck=true'
     
+- task: CredScan@2
+  displayName: 'Run CredScan'
+  inputs:
+    toolMajorVersion: 'V2'
+    outputFormat: 'sarif'
+    scanFolder: 'SecurityTmp'
+    suppressionsFile: 'tools/SecurityTools/CredScanSuppressions.json'
+  condition: in(variables['system.pullRequest.targetBranch'], 'generation', 'main')
