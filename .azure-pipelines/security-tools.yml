@@ -17,3 +17,24 @@ steps:
     targetType: 'inline'
     script: 'Install-Module platyPS -Force -Confirm:$false -Scope CurrentUser'
     pwsh: true
+
+- task: NodeTool@0
+  displayName: 'Install Node 14.17.1'
+  inputs:
+    versionSpec: 14.17.1
+  condition: eq(variables.IsGenerateBased, true)
+
+- task: PowerShell@2
+  displayName: 'Install autorest'
+  inputs:
+    targetType: 'inline'
+    script: 'npm install autorest@latest;$env:NODE_OPTIONS="--max-old-space-size=65536"'
+    pwsh: true
+  condition: eq(variables.IsGenerateBased, true)
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: 'custom'
+    custom: 'msbuild'
+    arguments: 'build.proj /t:Build;GenerateHelp /p:PullRequestNumber=$(System.PullRequest.PullRequestNumber);IsSecurityCheck=true'
+    
