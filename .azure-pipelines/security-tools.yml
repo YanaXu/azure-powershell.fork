@@ -46,3 +46,11 @@ steps:
     scanFolder: 'SecurityTmp'
     suppressionsFile: 'tools/SecurityTools/CredScanSuppressions.json'
   condition: in(variables['system.pullRequest.targetBranch'], 'generation', 'main')
+
+
+- task: CredScan@2
+  inputs:
+    toolMajorVersion: 'V2'
+    outputFormat: 'sarif'
+    scanFolder: 'SecurityTmp'
+    suppressionsFile: 'tools/SecurityTools/CredScanSuppressions.json'
