@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: pool-windows-2019
+
+steps:
+
+- task: PowerShell@2
+  displayName: 'Install platyPS'
+  inputs:
+    targetType: 'inline'
+    script: 'Install-Module platyPS -Force -Confirm:$false -Scope CurrentUser'
+    pwsh: true
+
+- task: NodeTool@0
+  displayName: 'Install Node 14.17.1'
+  inputs:
+    versionSpec: 14.17.1
+  condition: eq(variables.IsGenerateBased, true)
+
+- task: PowerShell@2
+  displayName: 'Install autorest'
+  inputs:
+    targetType: 'inline'
+    script: 'npm install autorest@latest;$env:NODE_OPTIONS="--max-old-space-size=65536"'
+    pwsh: true
+  condition: eq(variables.IsGenerateBased, true)
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: 'custom'
+    custom: 'msbuild'
+    arguments: 'build.proj /t:Build;GenerateHelp /p:PullRequestNumber=$(System.PullRequest.PullRequestNumber);IsSecurityCheck=true'
+    
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
+  displayName: 'Run CredScan'
+  inputs:
+    toolMajorVersion: 'V2'
+    outputFormat: 'sarif'
+    scanFolder: 'SecurityTmp'
+    suppressionsFile: 'tools/SecurityTools/CredScanSuppressions.json'
+  condition: in(variables['system.pullRequest.targetBranch'], 'generation', 'main')
+
+
+- task: CredScan@2
+  inputs:
+    toolMajorVersion: 'V2'
+    outputFormat: 'sarif'
+    scanFolder: 'SecurityTmp'
+    suppressionsFile: 'tools/SecurityTools/CredScanSuppressions.json'
