@@ -68,6 +68,10 @@ directive:
   - from: swagger-document
     where: $.definitions.AutoBackupSettings.properties.password
     transform: $.format = "password"
+  - from: swagger-document
+    where: $.paths["/subscriptions/{subscriptionId}/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines"]["get"]["parameters"]
+    transform: >-
+      return [{"$ref": "#/parameters/SubscriptionIdParameter"},{"$ref": "#/parameters/ApiVersionParameter"},{"name": "x-ms-authorization-auxiliary","in": "header","type": "string"}]
   #2. [swagger] change the final-state-via to align with service response
   - from: swagger-document
     where: $.paths["/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/{sqlVirtualMachineName}/redeploy"].post["x-ms-long-running-operation-options"]
@@ -126,6 +130,10 @@ directive:
   - where:  
       subject: ^SqlVM$
       verb: New|Update
+    hide: true
+  - where:  
+      subject: ^SqlVM$
+      verb: Get
     hide: true
   - where:  
       subject: ^SqlVMGroup$|^AvailabilityGroupListener$
