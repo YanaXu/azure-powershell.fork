@@ -45,15 +45,21 @@ runs:
         Get-ChildItem -Depth 2 | Resolve-Path -Relative
         Write-Host "-----------------------------"
         Get-Content .\artifacts\FilesChanged.txt
-    - name: Install Autorest
+    - name: Install Autorest & Setup environment for Autorest
       if: ${{ env.IsGenerateBased == 'true' }}
       shell: pwsh
       run: |
         npm install autorest@latest
-    - name: Setup environment for Autorest
-      if: ${{ env.IsGenerateBased == 'true' }}
+        $env:NODE_OPTIONS=\"--max-old-space-size=65536\"
+    - name: Check Ignored File
       shell: pwsh
       run: |
-        $env:NODE_OPTIONS=\"--max-old-space-size=65536\"
-        
-        
+        ./tools/CheckIgnoredFile.ps1
+    - name: Use .NET Core sdk 6.0.x
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+    - name: Build
+      shell: pwsh
+      run: |
+        dotnet msbuild build.proj /t:Build /p:Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}
