@@ -62,6 +62,13 @@ runs:
     - name: Build
       shell: pwsh
       run: |
+        dotnet --list-sdks
+        Write-Host "---------------------------1"
+        dotnet --list-runtimes
+        Write-Host "---------------------------2"
+    - name: Build
+      shell: pwsh
+      run: |
         dotnet msbuild build.proj /t:Build '/p:Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}'
     - name: Save ${{ inputs.testFramework }}
       if: ${{ always() }}
