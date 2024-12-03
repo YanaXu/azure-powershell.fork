@@ -35,6 +35,8 @@ namespace Microsoft.Azure.Commands.Aks
         private const string NameParameterSet = "NameParameterSet";
         private const string IdParameterSet = "IdParameterSet";
 
+        // add a comment line.
+
         /// <summary>
         /// Cluster name
         /// </summary>
