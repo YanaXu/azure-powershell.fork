@@ -1,0 +1,59 @@
+name: Build
+
+inputs:
+  testFramework:
+    description: 'Test Frameworkd'
+    default: ''
+    required: true
+    type: string
+  configuration:
+    description: 'configuration'
+    default: ''
+    required: true
+    type: string
+  powerShellPlatform:
+    description: 'PowerShell Platform'
+    default: ''
+    required: true
+    type: string
+  
+runs:
+  using: 'composite'
+  steps:
+    - name: Test
+      shell: pwsh
+      run: |
+        Write-Host "testFramework: ${{ inputs.testFramework }}"
+        Write-Host "configuration: ${{ inputs.configuration }}"
+        Write-Host "powerShellPlatform: ${{ inputs.powerShellPlatform }}"
+    - name: Test 2
+      shell: pwsh
+      env: 
+          inputs: ${{ toJson(inputs) }}
+          github: ${{ toJson(github) }}
+      run: |
+        Write-Host "----------------------------- 1"
+        Write-Host $env:inputs
+        Write-Host "----------------------------- 2"
+        Write-Host $env:github
+        Write-Host "----------------------------- 3"
+    - name: List PR Changed Files
+      uses: ./.github/workflows/get-pr-changed-files
+    - name: Test 3
+      shell: pwsh
+      run: |
+        Get-ChildItem -Depth 2 | Resolve-Path -Relative
+        Write-Host "-----------------------------"
+        Get-Content .\artifacts\FilesChanged.txt
+    - name: Install Autorest
+      if: ${{ env.IsGenerateBased == 'true' }}
+      shell: pwsh
+      run: |
+        npm install autorest@latest
+    - name: Setup environment for Autorest
+      if: ${{ env.IsGenerateBased == 'true' }}
+      shell: pwsh
+      run: |
+        $env:NODE_OPTIONS=\"--max-old-space-size=65536\"
+        
+        
