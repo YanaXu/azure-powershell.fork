@@ -62,4 +62,9 @@ runs:
     - name: Build
       shell: pwsh
       run: |
-        dotnet msbuild build.proj /t:Build /p:Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}
+        dotnet msbuild build.proj /t:Build '/p:Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}'
+    - name: Upload build artifact
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with: 
+        name: build-${{ inputs.testFramework }}
