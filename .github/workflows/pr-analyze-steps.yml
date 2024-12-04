@@ -25,6 +25,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-${{ inputs.testFramework }}
+        path: artifacts
     - name: Install Autorest & Setup environment for Autorest
       shell: pwsh
       run: |
