@@ -31,6 +31,6 @@ jobs:
   Build:
     uses: ./.github/workflows/pr-build-steps.yml
     with:
-      configuration: ${{ env.Configuration }}
-      testFramework: ${{ env.TestFramework }}
-      powerShellPlatform: ${{ env.PowerShellPlatform }}
+      configuration: 'Debug'
+      testFramework: 'net6.0'
+      powerShellPlatform: 'PowerShell Core'
