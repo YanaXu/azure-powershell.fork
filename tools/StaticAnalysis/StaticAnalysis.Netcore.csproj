@@ -7,6 +7,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
     <OutputPath>$(RepoArtifacts)StaticAnalysis\</OutputPath>
     <PublishDir>$(OutputPath)</PublishDir>
   </PropertyGroup>
