@@ -1,0 +1,60 @@
+name: PR Analyze
+
+on:
+  workflow_call:
+    inputs:
+      testFramework:
+        description: 'Test Framework'
+        default: ''
+        required: true
+        type: string
+      configuration:
+        description: 'configuration'
+        default: ''
+        required: true
+        type: string
+
+jobs:
+  Analyze:
+    runs-on: windows-latest
+
+    steps:
+    - name: Download Build Artifact
+      if: ${{ inputs.AdoArtifact != '' }}
+      uses: actions/download-artifact@v4
+      with:
+        name: build-${{ inputs.testFramework }}
+    - name: Install Autorest & Setup environment for Autorest
+      shell: pwsh
+      run: |
+        npm install autorest@latest
+        $env:NODE_OPTIONS="--max-old-space-size=65536"
+    - name: Set .Net SDK Version
+      uses: ./.github/workflows/set-dotnet-sdk-version
+      with:
+        version: '6.0.x'
+    - name: Install PowerShell Dependencies
+      shell: pwsh
+      run: |
+        Install-Module "platyPS", "PSScriptAnalyzer" -Force -Confirm:$false -Scope CurrentUser
+    - name: Install latest modules
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Path "Az-Cmdlets-latest"
+        Invoke-WebRequest -Uri "https://azpspackage.blob.core.windows.net/release/Az-Cmdlets-latest.tar.gz" -OutFile "Az-Cmdlets-latest/Az-Cmdlets-latest.tar.gz" -MaximumRetryCount 2 -RetryIntervalSec 1
+        tar -xvzf "Az-Cmdlets-latest/Az-Cmdlets-latest.tar.gz" -C "Az-Cmdlets-latest"
+        . Az-Cmdlets-latest/InstallModule.ps1
+    - name: Generate Help
+      shell: pwsh
+      run: |
+        dotnet msbuild build.proj /t:GenerateHelp /p:Configuration="${{ inputs.configuration }};PullRequestNumber=${{ github.event.number }}"
+    - name: Static Analysis
+      shell: pwsh
+      run: |
+        dotnet msbuild build.proj /t:StaticAnalysis /p:"Configuration=${{ inputs.configuration }};PullRequestNumber=${{ github.event.number }}"
+    - name: Save ${{ inputs.testFramework }}
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with: 
+        name: analyze-${{ inputs.testFramework }}-${{ github.run_attempt }}
+        path: artifacts
