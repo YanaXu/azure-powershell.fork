@@ -40,3 +40,10 @@ jobs:
     with:
       configuration: 'Debug'
       testFramework: 'net6.0'
+  Test:
+    needs: Build
+    uses: ./.github/workflows/pr-test-steps.yml
+    with:
+      configuration: 'Debug'
+      testFramework: 'net6.0'
+      testTarget: 'Test'
