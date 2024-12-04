@@ -29,13 +29,8 @@ env:
 jobs:
 
   Build:
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Build
-      uses: ./.github/workflows/pr-build-steps
-      with:
-        configuration: ${{ env.Configuration }}
-        testFramework: ${{ env.TestFramework }}
-        powerShellPlatform: ${{ env.PowerShellPlatform }}
+    uses: ./.github/workflows/pr-build-steps.yml
+    with:
+      configuration: ${{ env.Configuration }}
+      testFramework: ${{ env.TestFramework }}
+      powerShellPlatform: ${{ env.PowerShellPlatform }}
