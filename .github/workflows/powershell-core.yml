@@ -3,15 +3,6 @@ on:
   pull_request:
 
 env:
-  WindowsName: windows
-  WindowsAgentPoolName: pool-windows-2019
-  WindowsAgentPoolVMImage: ''
-  LinuxName: linux
-  LinuxAgentPoolName: pool-ubuntu-2004
-  LinuxAgentPoolVMImage: ''
-  MacOSName: macOS
-  MacOSAgentPoolName: 'Azure Pipelines'
-  MacOSAgentPoolVMImage: macOS-latest
   TestFramework: net6.0
   TestTarget: Test
   Configuration: Debug
@@ -22,8 +13,8 @@ env:
   TestTimeoutInMinutes: 180
   BuildAzPredictor: false
   EnableTestCoverage: true
-  TestCoverageLocation: $(Build.SourcesDirectory)/artifacts
-  PowerShellPlatform: PowerShell Core
+  TestCoverageLocation: 'artifacts'
+  PowerShellPlatform: 'PowerShell Core'
   AZURE_CLIENTS_SHOW_SECRETS_WARNING: true
   
 jobs:
