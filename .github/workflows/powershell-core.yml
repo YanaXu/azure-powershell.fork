@@ -31,9 +31,6 @@ jobs:
   Build:
     runs-on: windows-latest
     steps:
-    - shell: pwsh
-      run: |
-        dir env:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Build
