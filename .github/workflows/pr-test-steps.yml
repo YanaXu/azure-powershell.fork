@@ -65,7 +65,7 @@ jobs:
     - name: Analyze Test Coverage
       shell: pwsh
       run: |
-        ./tools/TestFx/Coverage/ValidateTestCoverage.ps1
+        pwsh ./tools/TestFx/Coverage/ValidateTestCoverage.ps1
     - name: Check Test Status
       shell: pwsh
       run: |
