@@ -1,0 +1,30 @@
+name: Set .NET SDK Version
+
+inputs:
+  version:
+    description: '.Net SDK Version'
+    required: true
+    type: string
+    
+runs:
+  using: 'composite'
+  steps:
+  - name: Check Dotnet Version
+    shell: pwsh
+    run: |
+      dotnet --info
+  - name: Use .NET Core sdk '${{ inputs.version }}'
+    uses: actions/setup-dotnet@v4
+    with:
+      dotnet-version: '${{ inputs.version }}'
+  - name: Set Dotnet SDK Version
+    shell: pwsh
+    run: |
+      $major = ('${{ inputs.version }}' -split '\.')[0]
+      $minor = ('${{ inputs.version }}' -split '\.')[1]
+      $SdkVersion=(dotnet --list-sdks | Select-String "$major.$minor.\d{3}").Matches[0].Value
+      dotnet new globaljson --sdk-version $SdkVersion --force
+  - name: Check Dotnet Version Again
+    shell: pwsh
+    run: |
+      dotnet --info
