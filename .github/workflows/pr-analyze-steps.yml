@@ -20,7 +20,6 @@ jobs:
 
     steps:
     - name: Download Build Artifact
-      if: ${{ inputs.AdoArtifact != '' }}
       uses: actions/download-artifact@v4
       with:
         name: build-${{ inputs.testFramework }}
