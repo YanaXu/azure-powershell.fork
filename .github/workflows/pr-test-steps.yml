@@ -53,7 +53,6 @@ jobs:
       run: |
         Set-Location 'artifacts/Debug'
         Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
-        $IsWindows = "${{ runner.os }}" -eq 'windows'
         if ($IsWindows) { $sp = ";" } else { $sp = ":" }
         $env:PSModulePath = $env:PSModulePath + $sp + (pwd).Path
         $rootFolder = (Get-item $PWD).Parent.Parent
