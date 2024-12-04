@@ -29,7 +29,7 @@ env:
 jobs:
 
   Build:
-    uses: ./.github/workflows/pr-build-steps.yml
+    uses: ./.github/workflows/util/pr-build-steps.yml
     with:
       configuration: 'Debug'
       testFramework: 'net6.0'
