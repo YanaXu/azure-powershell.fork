@@ -2,7 +2,7 @@ name: Build
 
 inputs:
   testFramework:
-    description: 'Test Frameworkd'
+    description: 'Test Framework'
     default: ''
     required: true
     type: string
