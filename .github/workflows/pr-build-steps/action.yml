@@ -62,10 +62,13 @@ runs:
     - name: Build
       shell: pwsh
       run: |
+        Write-Host "---------------------------0"
         dotnet --list-sdks
         Write-Host "---------------------------1"
         dotnet --list-runtimes
         Write-Host "---------------------------2"
+        dotnet --info
+        Write-Host "---------------------------3"
     - name: Build
       shell: pwsh
       run: |
