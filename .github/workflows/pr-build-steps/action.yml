@@ -20,13 +20,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Test
-      shell: pwsh
-      run: |
-        Write-Host "testFramework: ${{ inputs.testFramework }}"
-        Write-Host "configuration: ${{ inputs.configuration }}"
-        Write-Host "powerShellPlatform: ${{ inputs.powerShellPlatform }}"
-    - name: Test 2
+    - name: Check - print context
       shell: pwsh
       env: 
           inputs: ${{ toJson(inputs) }}
@@ -39,11 +33,9 @@ runs:
         Write-Host "----------------------------- 3"
     - name: List PR Changed Files
       uses: ./.github/workflows/get-pr-changed-files
-    - name: Test 3
+    - name: Check - Print Content of FilesChanged
       shell: pwsh
       run: |
-        #Get-ChildItem -Depth 2 | Resolve-Path -Relative
-        #Write-Host "-----------------------------"
         Get-Content .\artifacts\FilesChanged.txt
     - name: Install Autorest & Setup environment for Autorest
       if: ${{ env.IsGenerateBased == 'true' }}
