@@ -34,3 +34,9 @@ jobs:
       configuration: 'Debug'
       testFramework: 'net6.0'
       powerShellPlatform: 'PowerShell Core'
+  Analyze:
+    needs: Build
+    uses: ./.github/workflows/pr-analyze-steps.yml
+    with:
+      configuration: 'Debug'
+      testFramework: 'net6.0'
