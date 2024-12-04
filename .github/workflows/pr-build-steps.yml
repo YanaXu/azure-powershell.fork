@@ -54,23 +54,10 @@ jobs:
       shell: pwsh
       run: |
         ./tools/CheckIgnoredFile.ps1
-    - name: Check Dotnet Version 1
-      shell: pwsh
-      run: |
-        dotnet --info
-    - name: Use .NET Core sdk 6.0.x
-      uses: actions/setup-dotnet@v4
+    - name: Set .Net SDK Version
+      uses: ./.github/workflows/set-dotnet-sdk-version
       with:
-        dotnet-version: '6.0.x'
-    - name: Set Dotnet SDK Version
-      shell: pwsh
-      run: |
-        $SdkVersion=(dotnet --list-sdks | Select-String '6.\d{1}.\d{3}').Matches[0].Value
-        dotnet new globaljson --sdk-version $SdkVersion --force
-    - name: Check Dotnet Version 2
-      shell: pwsh
-      run: |
-        dotnet --info
+        version: '6.0.x'
     - name: Build
       shell: pwsh
       run: |
