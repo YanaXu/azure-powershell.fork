@@ -1,0 +1,85 @@
+name: PR Test
+
+on:
+  workflow_call:
+    inputs:
+      testFramework:
+        description: 'Test Framework'
+        default: ''
+        required: true
+        type: string
+      testTarget:
+        description: 'Test Target'
+        default: ''
+        required: true
+        type: string
+      configuration:
+        description: 'configuration'
+        default: ''
+        required: true
+        type: string
+jobs:
+  Test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: build-${{ inputs.testFramework }}
+    - name: Set .Net SDK Version
+      uses: ./.github/workflows/set-dotnet-sdk-version
+      with:
+        version: '6.0.x'
+    - name: Remove pre-installed Az modules
+      shell: pwsh
+      run: |
+        ./tools/TestFx/Utilities/CommonUtility.ps1
+    - name: Test
+      continue-on-error: true
+      shell: pwsh
+      run: |
+        dotnet msbuild build.proj /t:"${{ inputs.testTarget }}" /p:"Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number }}"
+    - name: Test for AutoGen Modules With PowerShell Core
+      if: ${{ inputs.testTarget  == 'Test' }}
+      continue-on-error: true
+      shell: pwsh
+      run: |
+        Set-Location 'artifacts/Debug'
+        Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
+        $IsWindows = "${{ runner.os }}" -eq 'windows'
+        if ($IsWindows) { $sp = ";" } else { $sp = ":" }
+        $env:PSModulePath = $env:PSModulePath + $sp + (pwd).Path
+        $rootFolder = (Get-item $PWD).Parent.Parent
+        Get-ChildItem -File -Recurse test-module.ps1 | ForEach-Object {
+          Write-Host $_.Directory.FullName
+          cd $rootFolder
+          .\tools\ExecuteCIStep.ps1 -TestAutorest -AutorestDirectory $_.Directory.FullName
+        }
+    - name: Analyze Test Coverage
+      shell: pwsh
+      run: |
+        ./tools/TestFx/Coverage/ValidateTestCoverage.ps1
+    - name: Check Test Status
+      shell: pwsh
+      run: |
+        Set-Location 'artifacts/PipelineResult'
+        $PipelineResult = Get-Content PipelineResult.json | ConvertFrom-Json
+        $FailedModuleList = $PipelineResult.test.Details[0].Modules | Where-Object { $_.Status -eq "Failed" } | ForEach-Object { $_.Module }
+        if ($FailedModuleList.Length -ne 0)
+        {
+          throw "test fails in module: $FailedModuleList"
+        }
+    - name: Check 
+      shell: pwsh
+      run: |
+        Get-ChildItem '**/*.trx'
+    - name: Save ${{ inputs.testFramework }}
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with: 
+        name: test-${{ inputs.testFramework }}-${{ runner.os }}-${{ github.run_attempt }}
+        path: artifacts
