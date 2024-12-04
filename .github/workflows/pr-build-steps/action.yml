@@ -42,8 +42,8 @@ runs:
     - name: Test 3
       shell: pwsh
       run: |
-        Get-ChildItem -Depth 2 | Resolve-Path -Relative
-        Write-Host "-----------------------------"
+        #Get-ChildItem -Depth 2 | Resolve-Path -Relative
+        #Write-Host "-----------------------------"
         Get-Content .\artifacts\FilesChanged.txt
     - name: Install Autorest & Setup environment for Autorest
       if: ${{ env.IsGenerateBased == 'true' }}
@@ -55,24 +55,27 @@ runs:
       shell: pwsh
       run: |
         ./tools/CheckIgnoredFile.ps1
+    - name: Check Dotnet Version 1
+      shell: pwsh
+      run: |
+        dotnet --info
     - name: Use .NET Core sdk 6.0.x
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
-    - name: Build
+    - name: Set Dotnet SDK Version
       shell: pwsh
       run: |
-        Write-Host "---------------------------0"
-        dotnet --list-sdks
-        Write-Host "---------------------------1"
-        dotnet --list-runtimes
-        Write-Host "---------------------------2"
+        $SdkVersion=(dotnet --list-sdks | Select-String '6.\d{1}.\d{3}').Matches[0].Value
+        dotnet new globaljson --sdk-version $SdkVersion --force
+    - name: Check Dotnet Version 2
+      shell: pwsh
+      run: |
         dotnet --info
-        Write-Host "---------------------------3"
     - name: Build
       shell: pwsh
       run: |
-        dotnet msbuild build.proj /t:Build /p:'Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}};warnNotAsError=NU1903'
+        dotnet msbuild build.proj /t:Build /p:'Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}'
     - name: Save ${{ inputs.testFramework }}
       if: ${{ always() }}
       uses: actions/upload-artifact@v4
