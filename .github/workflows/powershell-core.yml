@@ -13,7 +13,7 @@ env:
   TestTimeoutInMinutes: 180
   BuildAzPredictor: false
   EnableTestCoverage: true
-  TestCoverageLocation: 'artifacts'
+  TestCoverageLocation: '${{ github.workspace }}/artifacts'
   PowerShellPlatform: 'PowerShell Core'
   AZURE_CLIENTS_SHOW_SECRETS_WARNING: true
   
