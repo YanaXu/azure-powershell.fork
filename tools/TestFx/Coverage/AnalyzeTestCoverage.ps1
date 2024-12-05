@@ -41,10 +41,16 @@ $accountsModulePsd1 = Join-Path -Path $debugDir -ChildPath $accountsModuleName |
 Import-Module $accountsModulePsd1 -Force
 
 if ($PSBoundParameters.ContainsKey("DataLocation")) {
+    Write-Host "----------case 1"
     $cvgDir = $DataLocation
 }
 else {
+    Write-Host "----------case 2"
+    Get-AzConfig
     $cvgDir = (Get-AzConfig -TestCoverageLocation).Value
+    Write-Host "--------------------------1"
+    Write-Host "cvgDir----------" $cvgDir "-----------------------"
+    Write-Host "--------------------------2"
 }
 $cvgRootDir = Join-Path -Path $cvgDir -ChildPath "TestCoverageAnalysis"
 $cvgRawDir = Join-Path -Path $cvgRootDir -ChildPath "Raw"
