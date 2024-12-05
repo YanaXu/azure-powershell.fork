@@ -64,6 +64,8 @@ jobs:
     - name: Analyze Test Coverage
       shell: pwsh
       run: |
+        dir env:
+        Write-Host "-------------"
         pwsh ./tools/TestFx/Coverage/ValidateTestCoverage.ps1
     - name: Check Test Status
       shell: pwsh
