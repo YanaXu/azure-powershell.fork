@@ -23,6 +23,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+        TestCoverageLocation: ${{ env.TestCoverageLocation }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -44,12 +46,16 @@ jobs:
     - name: Test
       continue-on-error: true
       shell: pwsh
+      env:
+        PowerShellPlatform: ${{ env.powerShellPlatform }}
       run: |
         dotnet msbuild build.proj /t:"${{ inputs.testTarget }}" /p:"Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number }}"
     - name: Test for AutoGen Modules With PowerShell Core
       if: ${{ inputs.testTarget  == 'Test' }}
       continue-on-error: true
       shell: pwsh
+      env:
+        PowerShellPlatform: ${{ env.powerShellPlatform }}
       run: |
         Set-Location 'artifacts/Debug'
         Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
