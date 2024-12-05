@@ -58,6 +58,8 @@ jobs:
         version: '6.0.x'
     - name: Build
       shell: pwsh
+      env:
+        PowerShellPlatform: ${{ env.PowerShellPlatform }}
       run: |
         dotnet msbuild build.proj /t:Build /p:'Configuration=${{ inputs.configuration }};TestFramework=${{ inputs.testFramework }};PullRequestNumber=${{ github.event.number}}'
     - name: Save ${{ inputs.testFramework }}
