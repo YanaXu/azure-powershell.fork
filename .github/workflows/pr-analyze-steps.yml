@@ -48,10 +48,14 @@ jobs:
         . Az-Cmdlets-latest/InstallModule.ps1
     - name: Generate Help
       shell: pwsh
+      env: 
+        PowerShellPlatform: ${{ env.powerShellPlatform }}
       run: |
         dotnet msbuild build.proj /t:GenerateHelp /p:Configuration="${{ inputs.configuration }};PullRequestNumber=${{ github.event.number }}"
     - name: Static Analysis
       shell: pwsh
+      env:
+        IsGenerateBased: ${{ env.IsGenerateBased }}
       run: |
         dotnet msbuild build.proj /t:StaticAnalysis /p:"Configuration=${{ inputs.configuration }};PullRequestNumber=${{ github.event.number }}"
     - name: Save ${{ inputs.testFramework }}
