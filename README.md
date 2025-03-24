@@ -2,6 +2,7 @@
 
 # ![AzureIcon] ![PowershellIcon] Microsoft Azure PowerShell
 
+Add a test line.
 This repository contains PowerShell cmdlets for developers and administrators to develop, deploy,
 administer, and manage Microsoft Azure resources.
 
