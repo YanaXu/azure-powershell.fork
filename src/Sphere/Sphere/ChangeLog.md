@@ -18,6 +18,7 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+* General availability for module Az.Sphere
 
 ## Version 0.1.3
 * Upgraded nuget package to signed package.
